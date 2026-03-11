@@ -13,22 +13,26 @@ import Footer from "./components/Footer";
 import InterviewFlow from "./pages/InterviewFlow";
 
 import ResumeAnalysis from "./pages/ResumeAnalysis";
+import VideoLanding from "./pages/VideoLanding";
 
 function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/interview" element={<Interview />} />
-        <Route path="/interview-flow" element={<InterviewFlow />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />
-        <Route path="/report" element={<Report />} />
-        <Route path="/voice-interview" element={<VoiceInterview />} />
-        <Route path="/resume-analysis" element={<ResumeAnalysis />} />
-      </Routes>
+      <main className="min-h-[calc(100vh-4rem)]">
+        <Routes>
+          <Route path="/" element={<VideoLanding />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/interview" element={<Interview />} />
+          <Route path="/interview-flow" element={<InterviewFlow />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />
+          <Route path="/report" element={<Report />} />
+          <Route path="/voice-interview" element={<VoiceInterview />} />
+          <Route path="/resume-analysis" element={<ResumeAnalysis />} />
+        </Routes>
+      </main>
       <Footer />
     </BrowserRouter>
   );

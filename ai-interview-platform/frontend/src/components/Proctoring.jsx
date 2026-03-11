@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import axios from "axios";
-import styles from "../styles/Proctoring.module.css";
+import Button from "./ui/Button";
+import { Card, CardBody, CardHeader } from "./ui/Card";
 
 function Proctoring() {
   const videoRef = useRef();
@@ -89,14 +90,59 @@ function Proctoring() {
   };
 
   return (
-    <div className={styles.proctorContainer}>
-      <h3 className={styles.header}>AI Proctoring System</h3>
-      <video ref={videoRef} autoPlay className={styles.video} />
-      <p className={styles.warning}>{warning}</p>
-      <p className={styles.emotion}>Candidate Emotion: {emotion}</p>
-      <p className={styles.cheatCount}>Cheating Warnings: {cheatCount}</p>
-      <button onClick={sendCheatData}>Send Cheating Data</button>
-    </div>
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-4">
+        <div className="cb-proctorHeaderRow">
+          <div>
+            <div className="cb-proctorTitle">AI proctoring</div>
+            <div className="cb-proctorSubtitle">
+              Face presence, multiple faces, and basic behavior signals.
+            </div>
+          </div>
+          <Button onClick={sendCheatData} variant="secondary" size="sm">
+            Send data
+          </Button>
+        </div>
+      </CardHeader>
+      <CardBody className="cb-stack-4">
+        <div className="cb-proctorGrid">
+          <div className="cb-proctorVideoCol">
+            <div className="cb-videoFrame">
+              <video
+                ref={videoRef}
+                autoPlay
+                className="cb-videoEl"
+              />
+            </div>
+          </div>
+          <div className="cb-proctorMetaCol">
+            {warning ? (
+              <div className="cb-alertDanger">{warning}</div>
+            ) : (
+              <div className="cb-alertOk">No warnings detected.</div>
+            )}
+
+            <div className="cb-twoColStats">
+              <div className="cb-stat">
+                <div className="cb-statLabel">Emotion</div>
+                <div className="cb-statValue">{emotion}</div>
+              </div>
+              <div className="cb-stat">
+                <div className="cb-statLabel">Warnings</div>
+                <div className="cb-statValue">{cheatCount}</div>
+              </div>
+            </div>
+
+            <details className="cb-details">
+              <summary className="cb-detailsSummary">Emotion log</summary>
+              <div className="cb-detailsBody">
+                {emotionLog?.length ? emotionLog.join(", ") : "No entries yet."}
+              </div>
+            </details>
+          </div>
+        </div>
+      </CardBody>
+    </Card>
   );
 }
 

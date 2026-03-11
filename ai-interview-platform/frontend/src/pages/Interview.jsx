@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
 import * as faceapi from "face-api.js";
+import Button from "../components/ui/Button";
+import { Card, CardBody, CardHeader } from "../components/ui/Card";
 
 function Interview(props) {
   const videoRef = useRef(null);
@@ -239,141 +241,220 @@ function Interview(props) {
   };
 
   return (
-    <div style={{ textAlign: "center", padding: "20px" }}>
-      {/* AI Interviewer Avatar */}
-      <div className="flex flex-col items-center">
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/4712/4712027.png"
-          width="120"
-          alt="AI Interviewer"
-        />
-        <h2 className="text-xl mt-3">AI Interviewer</h2>
-      </div>
+    <div className="cb-container py-10 sm:py-14">
+      <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+        <div className="grid gap-6 lg:col-span-7">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-slate-900 text-white">
+                <span className="text-sm font-semibold">AI</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+                  AI interview
+                </h1>
+                <p className="mt-1 text-sm text-slate-600">
+                  Timed interview with integrity and behavior signals.
+                </p>
+              </div>
+            </div>
+            <Button onClick={generate} variant="secondary">
+              Start interview
+            </Button>
+          </div>
 
-      {/* Interview Timer */}
-      <h2>Time Remaining: {time}s</h2>
+          <Card>
+            <CardHeader className="pb-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="text-sm font-semibold text-slate-900">
+                  Progress
+                </div>
+                <div className="text-sm text-slate-600">
+                  Time remaining: <span className="font-medium">{time}s</span>
+                </div>
+              </div>
+              <div className="mt-4">
+                <div className="h-2 w-full rounded-full bg-slate-100">
+                  <div
+                    className="h-2 rounded-full bg-slate-900 transition-all"
+                    style={{
+                      width: `${((current + 1) / (questions.length || 1)) * 100}%`,
+                    }}
+                  />
+                </div>
+                <div className="mt-2 text-xs text-slate-500">
+                  Question {current + 1} / {questions.length || 1}
+                </div>
+              </div>
+            </CardHeader>
+            <CardBody className="grid gap-4">
+              {loading && (
+                <div className="rounded-xl bg-slate-50 p-3 text-sm text-slate-600 ring-1 ring-slate-200">
+                  <span className="animate-pulse">AI analyzing…</span>
+                </div>
+              )}
 
-      {/* Progress Bar */}
-      <div
-        className="w-full bg-gray-200 h-3 rounded"
-        style={{ margin: "20px 0" }}
-      >
-        <div
-          className="bg-blue-500 h-3 rounded"
-          style={{
-            width: `${((current + 1) / (questions.length || 1)) * 100}%`,
-          }}
-        ></div>
-      </div>
-      <div style={{ marginBottom: "10px" }}>
-        Question {current + 1} / {questions.length || 1}
-      </div>
-      {/* Loading Indicator */}
-      {loading && (
-        <div className="animate-pulse" style={{ margin: "20px 0" }}>
-          AI analyzing...
-        </div>
-      )}
-
-      {/* Integrity Score */}
-      <div style={{ marginBottom: "10px", fontWeight: "bold" }}>
-        Integrity Score: {integrity}%
-      </div>
-
-      {/* Alert Box */}
-      {alert && <div className="bg-red-500 text-white p-2 mt-2">⚠ {alert}</div>}
-
-      {/* Video */}
-      <div style={{ marginBottom: "20px" }}>
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          width="400"
-          style={{
-            maxWidth: "600px",
-            borderRadius: "8px",
-            border: "2px solid #333",
-          }}
-        />
-      </div>
-
-      <button
-        onClick={sendGazeAlert}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#ff4d4f",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        Simulate "Looking Away" Alert
-      </button>
-
-      <button onClick={generate} style={{ marginTop: 20, marginLeft: 10 }}>
-        Start Interview
-      </button>
-
-      {/* Emotion and Behavior UI */}
-      {emotion && (
-        <div className="bg-blue-500 text-white p-2 mt-3">
-          Emotion Detected: {emotion}
-        </div>
-      )}
-      {behavior && (
-        <div className="bg-green-500 text-white p-2 mt-2">
-          Behavior: {behavior}
-        </div>
-      )}
-      {behaviorScore > 0 && (
-        <div className="bg-gray-200 text-black p-2 mt-2">
-          Behavior Score: {behaviorScore}
-        </div>
-      )}
-
-      {/* Question and Answer UI */}
-      {questions.length > 0 && (
-        <div style={{ marginTop: 30 }}>
-          {questions.map((q, index) => (
-            <div
-              key={index}
-              style={{
-                marginBottom: 20,
-                borderBottom: "1px solid #eee",
-                paddingBottom: 10,
-              }}
-            >
-              <h3>Question {index + 1}</h3>
-              <p>{q}</p>
-              {index === current && (
-                <>
-                  <button onClick={() => speak(q)} style={{ marginRight: 10 }}>
-                    🔊 Ask Question
-                  </button>
-                  <button onClick={startRecording} style={{ marginRight: 10 }}>
-                    🎤 Start Answer
-                  </button>
-                  <button onClick={submitAnswer} style={{ marginRight: 10 }}>
-                    Submit Answer
-                  </button>
-                  <div style={{ marginTop: 20 }}>
-                    <b>Candidate Answer:</b>
-                    <div>{answer}</div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+                  <div className="text-xs font-medium text-slate-500">
+                    Integrity score
                   </div>
-                  {/* AI Evaluation */}
+                  <div className="mt-1 text-2xl font-semibold text-slate-900">
+                    {integrity}%
+                  </div>
+                </div>
+                <div className="grid gap-2">
+                  {alert ? (
+                    <div className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700 ring-1 ring-rose-200">
+                      {alert}
+                    </div>
+                  ) : (
+                    <div className="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700 ring-1 ring-emerald-200">
+                      No integrity alerts.
+                    </div>
+                  )}
+                  <Button onClick={sendGazeAlert} variant="danger">
+                    Simulate looking-away alert
+                  </Button>
+                </div>
+              </div>
+
+              <div className="aspect-video overflow-hidden rounded-2xl bg-slate-900 ring-1 ring-slate-200">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  muted
+                  className="h-full w-full object-cover"
+                />
+              </div>
+
+              <div className="grid gap-2 sm:grid-cols-3">
+                <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
+                  <div className="text-xs font-medium text-slate-500">Emotion</div>
+                  <div className="mt-1 text-sm font-semibold text-slate-900">
+                    {emotion ?? "—"}
+                  </div>
+                </div>
+                <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
+                  <div className="text-xs font-medium text-slate-500">
+                    Behavior
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-slate-900">
+                    {behavior ?? "—"}
+                  </div>
+                </div>
+                <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
+                  <div className="text-xs font-medium text-slate-500">
+                    Behavior score
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-slate-900">
+                    {behaviorScore || "—"}
+                  </div>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </div>
+
+        <div className="grid gap-6 lg:col-span-5">
+          <Card>
+            <CardHeader className="pb-4">
+              <div className="text-sm font-semibold text-slate-900">
+                Interview Q&A
+              </div>
+              <div className="text-sm text-slate-600">
+                Answer the current question and submit for scoring.
+              </div>
+            </CardHeader>
+            <CardBody className="grid gap-4">
+              {questions.length > 0 ? (
+                <>
+                  <div className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
+                    <div className="text-xs font-medium text-slate-500">
+                      Current question
+                    </div>
+                    <div className="mt-1 text-sm font-semibold text-slate-900">
+                      {questions[current]}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      onClick={() => speak(questions[current])}
+                      variant="secondary"
+                      size="sm"
+                    >
+                      Ask
+                    </Button>
+                    <Button onClick={startRecording} variant="secondary" size="sm">
+                      Record
+                    </Button>
+                    <Button onClick={submitAnswer} size="sm">
+                      Submit
+                    </Button>
+                    <Button onClick={nextQuestion} variant="ghost" size="sm">
+                      Next
+                    </Button>
+                  </div>
+
+                  <div className="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
+                    <div className="text-xs font-medium text-slate-500">
+                      Candidate answer
+                    </div>
+                    <div className="mt-1 whitespace-pre-wrap text-sm text-slate-800">
+                      {answer || "No answer captured yet."}
+                    </div>
+                  </div>
+
                   {score !== null && (
-                    <div className="mt-4">
-                      <h2>AI Score: {score}/10</h2>
+                    <div className="rounded-2xl bg-emerald-50 p-4 ring-1 ring-emerald-200">
+                      <div className="text-xs font-medium text-emerald-700">
+                        AI score
+                      </div>
+                      <div className="mt-1 text-2xl font-semibold text-emerald-900">
+                        {score}/10
+                      </div>
                     </div>
                   )}
                 </>
+              ) : (
+                <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-600 ring-1 ring-slate-200">
+                  Start the interview to load questions.
+                </div>
               )}
-            </div>
-          ))}
+            </CardBody>
+          </Card>
+
+          {questions.length > 0 && (
+            <Card>
+              <CardHeader className="pb-4">
+                <div className="text-sm font-semibold text-slate-900">
+                  Question list
+                </div>
+                <div className="text-sm text-slate-600">
+                  Track what’s coming next.
+                </div>
+              </CardHeader>
+              <CardBody>
+                <ol className="grid gap-2 text-sm text-slate-700">
+                  {questions.map((q, index) => (
+                    <li
+                      key={index}
+                      className={`rounded-xl p-3 ring-1 ${
+                        index === current
+                          ? "bg-slate-900 text-white ring-slate-900"
+                          : "bg-white ring-slate-200"
+                      }`}
+                    >
+                      <span className="font-medium">Q{index + 1}.</span> {q}
+                    </li>
+                  ))}
+                </ol>
+              </CardBody>
+            </Card>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

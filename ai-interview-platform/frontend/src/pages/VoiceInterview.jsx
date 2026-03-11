@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import Proctoring from "../components/Proctoring";
-import styles from "../styles/VoiceInterview.module.css";
+import Button from "../components/ui/Button";
+import { Card, CardBody, CardHeader } from "../components/ui/Card";
 
 function VoiceInterview() {
   const questions = [
@@ -52,27 +53,67 @@ function VoiceInterview() {
   };
 
   return (
-    <div className={styles.voiceContainer}>
-      <Proctoring />
-      <h2 className={styles.header}>AI Voice Interview</h2>
-      <h3 className={styles.question}>Question {current + 1}</h3>
-      <p className={styles.question}>{questions[current]}</p>
-      <button onClick={speakQuestion} className={styles.button}>
-        🔊 Ask Question
-      </button>
-      <button onClick={startListening} className={styles.button}>
-        🎤 Record Answer
-      </button>
-      <p className={styles.answer}>
-        <b>Candidate Answer:</b>
-      </p>
-      <p className={styles.answer}>{answer}</p>
-      <button onClick={nextQuestion} className={styles.button}>
-        Next Question
-      </button>
-      <button onClick={evaluateAnswer} className={styles.button}>
-        Evaluate Answer
-      </button>
+    <div className="cb-container py-10 sm:py-14">
+      <div className="grid gap-6 lg:grid-cols-12">
+        <div className="lg:col-span-7">
+          <div className="space-y-2">
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+              Voice interview
+            </h1>
+            <p className="text-sm text-slate-600">
+              Ask the question, record an answer, and evaluate it.
+            </p>
+          </div>
+
+          <Card className="mt-6">
+            <CardHeader className="pb-4">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-sm font-semibold text-slate-900">
+                    Question {current + 1} of {questions.length}
+                  </div>
+                  <div className="mt-1 text-sm text-slate-600">
+                    {questions[current]}
+                  </div>
+                </div>
+              </div>
+            </CardHeader>
+            <CardBody className="grid gap-4">
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button onClick={speakQuestion} variant="secondary">
+                  Ask question
+                </Button>
+                <Button onClick={startListening} variant="secondary">
+                  Record answer
+                </Button>
+                <Button onClick={evaluateAnswer}>Evaluate</Button>
+                <Button
+                  onClick={nextQuestion}
+                  variant="ghost"
+                  disabled={current >= questions.length - 1}
+                >
+                  Next
+                </Button>
+              </div>
+
+              <div className="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+                <div className="text-xs font-medium text-slate-500">
+                  Candidate answer
+                </div>
+                <div className="mt-1 whitespace-pre-wrap text-sm text-slate-800">
+                  {answer || "No answer recorded yet."}
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </div>
+
+        <div className="lg:col-span-5">
+          <div className="lg:sticky lg:top-20">
+            <Proctoring />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
