@@ -1,10 +1,12 @@
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Interview } from "./Interview";
 import Button from "../components/ui/Button";
 import { Card, CardBody, CardHeader } from "../components/ui/Card";
 import { Input, Label, Textarea } from "../components/ui/Form";
 
 export default function ResumeAnalysis() {
+  const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [jd, setJd] = useState("");
   const [result, setResult] = useState(null);
@@ -46,6 +48,7 @@ export default function ResumeAnalysis() {
       if (data && data.resume_skills && loadQuestionsRef.current) {
         loadQuestionsRef.current(data.resume_skills);
       }
+      navigate("/interview-flow", { state: { resume: file, jd: jd } });
     } finally {
       setBusy(false);
     }

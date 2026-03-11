@@ -3,8 +3,16 @@ import axios from "axios";
 import Button from "../components/ui/Button";
 import { Card, CardBody, CardHeader } from "../components/ui/Card";
 import { getUserSession } from "../utils/auth";
+import Leaderboard from "../components/Leaderboard";
 
 function RecruiterDashboard() {
+  const [candidates, setCandidates] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:8000/leaderboard").then((res) => {
+      setCandidates(res.data);
+    });
+  }, []);
   const [alerts, setAlerts] = useState([]);
   const [reportFile, setReportFile] = useState(null);
   const [decision, setDecision] = useState(null);
@@ -116,6 +124,8 @@ function RecruiterDashboard() {
           </p>
         </div>
       </div>
+
+      <Leaderboard candidates={candidates} />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-12">
         <Card className="lg:col-span-4">

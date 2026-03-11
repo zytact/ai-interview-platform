@@ -4,6 +4,7 @@ import jsPDF from "jspdf";
 import Button from "../components/ui/Button";
 import { Card, CardBody, CardHeader } from "../components/ui/Card";
 import { getUserSession } from "../utils/auth";
+import Leaderboard from "../components/Leaderboard";
 
 function Dashboard() {
   const [result, setResult] = useState(null);
@@ -79,6 +80,7 @@ function Dashboard() {
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-12">
+        <Leaderboard candidates={candidates} />
         <Card className="lg:col-span-5">
           <CardHeader className="pb-4">
             <div className="text-sm font-semibold text-slate-900">Actions</div>

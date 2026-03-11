@@ -365,6 +365,25 @@
       rgba(255, 255, 255, 0.18)
     );
   }
+
+  /* Leaderboard */
+  .leaderboard-table {
+    border-collapse: separate;
+    border-spacing: 0 8px;
+  }
+
+  .leaderboard-table th,
+  .leaderboard-table td {
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .leaderboard-table th {
+    background-color: #f8fafc;
+  }
+
+  .leaderboard-table tr:last-child td {
+    border-bottom: none;
+  }
 }
 
 @layer utilities {
