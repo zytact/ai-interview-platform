@@ -18,6 +18,7 @@ function Login() {
   const [role, setRole] = useState("candidate");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [mode, setMode] = useState("signin"); // "signin" | "signup"
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -28,16 +29,28 @@ function Login() {
     setError("");
     setBusy(true);
     try {
-      const res = await axios.post(`${API_BASE}/auth/signin`, {
-        name,
-        password,
-        role,
-      });
+      let res;
+      if (mode === "signin") {
+        res = await axios.post(`${API_BASE}/auth/signin`, {
+          name,
+          password,
+          role,
+        });
+      } else {
+        const signupPath =
+          role === "recruiter"
+            ? `${API_BASE}/auth/signup/recruiter`
+            : `${API_BASE}/auth/signup/candidate`;
+        res = await axios.post(signupPath, {
+          name,
+          password,
+        });
+      }
 
       const user = res.data; // { id, name, role }
       saveUserSession(user);
 
-      // If there was a redirect source, go there. 
+      // If there was a redirect source, go there.
       // Otherwise, go to default dashboard based on role.
       if (location.state?.from) {
         navigate(from, { replace: true });
@@ -47,29 +60,75 @@ function Login() {
         navigate("/dashboard", { replace: true });
       }
     } catch (err) {
-      setError(err.response?.data?.detail || "An error occurred during sign in.");
+      // Try to surface the most useful error message possible
+      // 1) Backend-provided detail
+      const backendDetail =
+        err.response?.data?.detail ??
+        (typeof err.response?.data === "string"
+          ? err.response.data
+          : null);
+
+      // 2) Network/connectivity issue
+      if (!err.response) {
+        setError(
+          "Cannot reach the server. Please make sure the backend is running at " +
+            API_BASE +
+            ".",
+        );
+      } else if (backendDetail) {
+        setError(backendDetail);
+      } else if (mode === "signin") {
+        setError("An error occurred during sign in.");
+      } else {
+        setError("An error occurred during sign up.");
+      }
+      // Helpful for debugging in the browser
+      // eslint-disable-next-line no-console
+      console.error("Auth error:", err);
     } finally {
       setBusy(false);
     }
   }
+
+  const title = mode === "signin" ? "Sign in" : "Sign up";
+  const description =
+    mode === "signin"
+      ? "Enter your name and password, then choose whether you are a candidate or a recruiter."
+      : "Create a new account as a candidate or recruiter. You can use this account to sign in later.";
 
   return (
     <div className="cb-container py-10 sm:py-14">
       <div className="mx-auto grid max-w-xl gap-6">
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
-            Sign in
+            {title}
           </h1>
-          <p className="text-sm text-slate-600">
-            Enter your name and password, then choose whether you are a candidate
-            or a recruiter.
-          </p>
+          <p className="text-sm text-slate-600">{description}</p>
         </div>
 
         <Card>
           <CardHeader className="pb-4">
-            <div className="text-sm font-semibold text-slate-900">
-              Account details
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-semibold text-slate-900">
+                Account details
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-slate-500">
+                  {mode === "signin"
+                    ? "New here?"
+                    : "Already have an account?"}
+                </span>
+                <button
+                  type="button"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                  onClick={() => {
+                    setMode((m) => (m === "signin" ? "signup" : "signin"));
+                    setError("");
+                  }}
+                >
+                  {mode === "signin" ? "Sign up" : "Sign in"}
+                </button>
+              </div>
             </div>
           </CardHeader>
           <CardBody>
@@ -116,12 +175,19 @@ function Login() {
               )}
 
               <Button type="submit" disabled={busy}>
-                {busy ? "Signing in..." : "Continue"}
+                {busy
+                  ? mode === "signin"
+                    ? "Signing in..."
+                    : "Signing up..."
+                  : mode === "signin"
+                    ? "Continue"
+                    : "Create account"}
               </Button>
 
               <HelperText>
-                This is a simple sign-in UI. We can later connect it to MongoDB
-                and show role-based dashboards.
+                You can use the same account to sign in again later. Choose
+                whether you are a candidate or recruiter so we can show the
+                right dashboard.
               </HelperText>
             </form>
           </CardBody>

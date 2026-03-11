@@ -40,7 +40,11 @@ export default function Navbar() {
   };
 
   const navItems = isRecruiter
-    ? [...baseNavItems, { to: "/recruiter-dashboard", label: "Recruiter" }]
+    ? [
+        ...baseNavItems,
+        { to: "/my-jobs", label: "My Jobs" },
+        { to: "/recruiter-dashboard", label: "Recruiter Dashboard" },
+      ]
     : baseNavItems;
 
   return (

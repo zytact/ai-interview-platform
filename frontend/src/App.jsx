@@ -16,6 +16,7 @@ import InterviewFlow from "./pages/InterviewFlow";
 import ResumeAnalysis from "./pages/ResumeAnalysis";
 import VideoLanding from "./pages/VideoLanding";
 import Jobs from "./pages/Jobs";
+import MyJobs from "./pages/MyJobs";
 
 function App() {
   return (
@@ -39,6 +40,14 @@ function App() {
                     element={
                       <ProtectedRoute role="recruiter">
                         <RecruiterDashboard />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/my-jobs"
+                    element={
+                      <ProtectedRoute role="recruiter">
+                        <MyJobs />
                       </ProtectedRoute>
                     }
                   />
